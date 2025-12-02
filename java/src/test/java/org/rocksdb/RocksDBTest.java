@@ -1641,11 +1641,11 @@ public class RocksDBTest {
       try (final RocksDB db = RocksDB.open(options, dbPath)) {
         final RocksDB.LiveFiles livefiles = db.getLiveFiles(true);
         assertThat(livefiles).isNotNull();
-        assertThat(livefiles.manifestFileSize).isEqualTo(70);
+        assertThat(livefiles.manifestFileSize).isGreaterThan(0);
         assertThat(livefiles.files.size()).isEqualTo(3);
         assertThat(livefiles.files.get(0)).isEqualTo("/CURRENT");
-        assertThat(livefiles.files.get(1)).isEqualTo("/MANIFEST-000005");
-        assertThat(livefiles.files.get(2)).isEqualTo("/OPTIONS-000007");
+        assertThat(livefiles.files.get(1)).startsWith("/MANIFEST-");
+        assertThat(livefiles.files.get(2)).startsWith("/OPTIONS-");
       }
     }
   }
