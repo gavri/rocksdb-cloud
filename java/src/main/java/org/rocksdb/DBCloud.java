@@ -11,7 +11,8 @@ import java.util.List;
 /**
  * RocksDB variant with cloud support. Requires {@link Options#setEnv(Env)} to
  * be configured with a cloud-enabled {@link Env}, for example via
- * {@link CloudEnv#create(Env, String)}.
+ * Use with a cloud-enabled {@link Env}, for example one created via
+ * {@link CloudEnvOptions#createEnv(Env)}.
  */
 public class DBCloud extends RocksDB {
   private DBCloud(final long nativeHandle) {
@@ -170,4 +171,16 @@ public class DBCloud extends RocksDB {
 
   private static native byte[][] listColumnFamilies(long dbOptionsHandle,
       String name) throws RocksDBException;
+
+  /**
+   * Convenience overload to open using {@link CloudEnvOptions}. This will set
+   * the Env on the provided {@link Options} instance.
+   */
+  public static DBCloud open(final Options options, final String path,
+      final CloudEnvOptions cloudEnvOptions, final String persistentCachePath,
+      final long persistentCacheSizeGb, final boolean readOnly)
+      throws RocksDBException {
+    options.setEnv(cloudEnvOptions.createEnv(Env.getDefault()));
+    return open(options, path, persistentCachePath, persistentCacheSizeGb, readOnly);
+  }
 }

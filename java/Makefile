@@ -25,6 +25,7 @@ NATIVE_JAVA_CLASSES = \
 	org.rocksdb.CompactionOptionsFIFO\
 	org.rocksdb.CompactionOptionsUniversal\
 	org.rocksdb.CompactRangeOptions\
+	org.rocksdb.CloudEnvOptions\
 	org.rocksdb.ComparatorOptions\
 	org.rocksdb.CompressionOptions\
 	org.rocksdb.ConfigOptions\
