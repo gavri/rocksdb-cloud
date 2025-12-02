@@ -21,6 +21,7 @@ set(JNI_NATIVE_SOURCES
         rocksjni/checkpoint.cc
         rocksjni/clock_cache.cc
         rocksjni/cache.cc
+        rocksjni/cloud.cc
         rocksjni/columnfamilyhandle.cc
         rocksjni/compaction_filter.cc
         rocksjni/compaction_filter_factory.cc

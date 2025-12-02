@@ -673,6 +673,7 @@ JNI_NATIVE_SOURCES =                                          \
   java/rocksjni/cache.cc                                      \
   java/rocksjni/columnfamilyhandle.cc                         \
   java/rocksjni/compact_range_options.cc                      \
+  java/rocksjni/cloud.cc                                      \
   java/rocksjni/compaction_filter.cc                          \
   java/rocksjni/compaction_filter_factory.cc                  \
   java/rocksjni/compaction_filter_factory_jnicallback.cc      \

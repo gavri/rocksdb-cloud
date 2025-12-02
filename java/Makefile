@@ -39,6 +39,7 @@ NATIVE_JAVA_CLASSES = \
 	org.rocksdb.HashSkipListMemTableConfig\
 	org.rocksdb.ConcurrentTaskLimiter\
 	org.rocksdb.ConcurrentTaskLimiterImpl\
+	org.rocksdb.CloudEnv\
 	org.rocksdb.KeyMayExist\
 	org.rocksdb.Logger\
 	org.rocksdb.LRUCache\
@@ -59,6 +60,7 @@ NATIVE_JAVA_CLASSES = \
 	org.rocksdb.RemoveEmptyValueCompactionFilter\
 	org.rocksdb.RestoreOptions\
 	org.rocksdb.RocksCallbackObject\
+	org.rocksdb.DBCloud\
 	org.rocksdb.RocksDB\
 	org.rocksdb.RocksEnv\
 	org.rocksdb.RocksIterator\

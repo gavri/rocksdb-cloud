@@ -2005,9 +2005,10 @@ IOStatus CloudFileSystemImpl::RollNewCookie(
 
   const auto& base_fs = GetBaseFileSystem();
   Log(InfoLogLevel::INFO_LEVEL, info_log_,
-      "Rolling new CLOUDMANIFEST from file number %lu, renaming MANIFEST-%s to "
+      "Rolling new CLOUDMANIFEST from file number %llu, renaming MANIFEST-%s to "
       "MANIFEST-%s, new cookie: %s",
-      delta.file_num, old_epoch.c_str(), delta.epoch.c_str(), cookie.c_str());
+      static_cast<unsigned long long>(delta.file_num), old_epoch.c_str(),
+      delta.epoch.c_str(), cookie.c_str());
   // ManifestFileWithEpoch(local_dbname, oldEpoch) should exist locally.
   // We have to move our old manifest to the new filename.
   // However, we don't move here, we copy. If we moved and crashed immediately
