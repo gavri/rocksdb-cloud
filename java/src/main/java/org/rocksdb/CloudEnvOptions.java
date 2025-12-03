@@ -18,6 +18,7 @@ public class CloudEnvOptions {
   private String destRegion;
   private String accessKeyId;
   private String secretAccessKey;
+  private String awsConfigFile;
   private boolean keepLocalSstFiles = true;
   private boolean keepLocalLogFiles = true;
   private boolean resyncOnOpen = false;
@@ -63,19 +64,21 @@ public class CloudEnvOptions {
     return this;
   }
 
-  /**
-   * Optional access key id (currently ignored in config string; provided for compatibility).
-   */
   public CloudEnvOptions setAccessKeyId(final String accessKeyId) {
     this.accessKeyId = accessKeyId;
     return this;
   }
 
-  /**
-   * Optional secret access key (currently ignored in config string; provided for compatibility).
-   */
   public CloudEnvOptions setSecretAccessKey(final String secretAccessKey) {
     this.secretAccessKey = secretAccessKey;
+    return this;
+  }
+
+  /**
+   * Optional AWS shared config/credentials file path (e.g., ~/.aws/credentials).
+   */
+  public CloudEnvOptions setAwsConfigFile(final String awsConfigFile) {
+    this.awsConfigFile = awsConfigFile;
     return this;
   }
 
@@ -142,6 +145,7 @@ public class CloudEnvOptions {
     append(sb, "new_cookie_on_open", newCookieOnOpen);
     append(sb, "s3.access_key_id", accessKeyId);
     append(sb, "s3.secret_access_key", secretAccessKey);
+    append(sb, "s3.config_file", awsConfigFile);
     // strip trailing ';' if present
     if (sb.length() > 0 && sb.charAt(sb.length() - 1) == ';') {
       sb.setLength(sb.length() - 1);
@@ -231,6 +235,11 @@ public class CloudEnvOptions {
 
     public Builder setSecretAccessKey(final String secretAccessKey) {
       opts.setSecretAccessKey(secretAccessKey);
+      return this;
+    }
+
+    public Builder setAwsConfigFile(final String awsConfigFile) {
+      opts.setAwsConfigFile(awsConfigFile);
       return this;
     }
 

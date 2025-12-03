@@ -45,6 +45,22 @@ To run necessary tests, use `run_tests.sh` script
 ./run_tests.sh -h
 ```
 
+## Build the JNI jar yourself (if you don’t have a prebuilt)
+- Build the JNI from the cloud fork (macOS example):
+  1) Clone the branch `https://github.com/mansu/rocksdb-cloud/tree/build_cloud_jni`.
+  2) In that repo: `USE_AWS=1 USE_RTTI=1 make jclean clean jtest rocksdbjava`.
+  3) Copy the jar into the prebuilt location used by this repo:
+     `cp ./java/target/rocksdbjni-9.1.1-osx.jar <REPO_ROOT>/tools/prebuilt/rocksdbjni-9.1.1-osx.jar`
+- Once the jar is present, run `make install-prebuilt-rocksdb` (or `make jni` if you prefer to build/install directly into `~/.m2`).
+- Then build the POC: `make build` or `mvn -pl rocksdb-sync-poc clean package`.
+
+### Native dependencies (macOS Homebrew)
+- AWS support (S3/Kinesis): `brew install aws-sdk-cpp aws-crt-cpp`
+- Kafka/WAL streaming: `brew install librdkafka`
+- Other common deps: `brew install gflags`
+
+If you need Kinesis, make sure your AWS SDK is built with Kinesis enabled (e.g., `BUILD_ONLY="s3;kinesis;transfer;core"`) and then build with `USE_AWS=1`. For Kafka WAL, install `librdkafka` and build with `USE_KAFKA=1`.
+
 ## License
 
 RocksDB is dual-licensed under both the GPLv2 (found in the COPYING file in the root directory) and Apache 2.0 License (found in the LICENSE.Apache file in the root directory).  You may select, at your option, one of the above-listed licenses.

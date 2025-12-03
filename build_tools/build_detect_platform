@@ -634,10 +634,34 @@ fi
 # that the AWS build is not triggered.
 #
 if [ "${USE_AWS}XXX" = "1XXX" ]; then
-  AWS_SDK=/usr/local
+  if [ -z "${AWS_SDK}" ]; then
+    if [ -d "/opt/homebrew/opt/aws-sdk-cpp" ]; then
+      AWS_SDK=/opt/homebrew/opt/aws-sdk-cpp
+    else
+      AWS_SDK=/usr/local
+    fi
+  fi
   AWI=${AWS_SDK}/include/
-  S3_CCFLAGS="$S3_CCFLAGS -I$AWI -DUSE_AWS"
-  S3_LDFLAGS="$S3_LDFLAGS -laws-cpp-sdk-s3 -laws-cpp-sdk-kinesis -laws-cpp-sdk-core -laws-cpp-sdk-transfer"
+  AWS_CRT_INCLUDE=
+  if [ -n "${AWS_CRT}" ] && [ -d "${AWS_CRT}/include" ]; then
+    AWS_CRT_INCLUDE=${AWS_CRT}/include/
+  elif [ -d "/opt/homebrew/opt/aws-crt-cpp/include" ]; then
+    AWS_CRT_INCLUDE=/opt/homebrew/opt/aws-crt-cpp/include/
+  elif [ -d "${AWS_SDK}/../aws-crt-cpp/include" ]; then
+    AWS_CRT_INCLUDE=${AWS_SDK}/../aws-crt-cpp/include/
+  fi
+  # Pull in common CRT dependency headers when present (Homebrew layout).
+  for dep in aws-c-common aws-c-io aws-c-cal aws-c-compression aws-c-http aws-c-event-stream aws-checksums aws-c-mqtt aws-c-auth aws-c-sdkutils; do
+    if [ -d "/opt/homebrew/opt/${dep}/include" ]; then
+      S3_CCFLAGS="$S3_CCFLAGS -I/opt/homebrew/opt/${dep}/include"
+    fi
+  done
+  S3_CCFLAGS="$S3_CCFLAGS -I$AWI"
+  if [ -n "$AWS_CRT_INCLUDE" ]; then
+    S3_CCFLAGS="$S3_CCFLAGS -I$AWS_CRT_INCLUDE"
+  fi
+  S3_CCFLAGS="$S3_CCFLAGS -DUSE_AWS"
+  S3_LDFLAGS="$S3_LDFLAGS -laws-cpp-sdk-s3 -laws-cpp-sdk-kinesis -laws-cpp-sdk-core -laws-cpp-sdk-transfer -laws-crt-cpp -laws-c-common -laws-c-io -laws-c-event-stream -laws-checksums -laws-c-cal -laws-c-compression -laws-c-http -laws-c-mqtt -laws-c-auth -laws-c-sdkutils"
   COMMON_FLAGS="$COMMON_FLAGS $S3_CCFLAGS"
   PLATFORM_LDFLAGS="$S3_LDFLAGS $PLATFORM_LDFLAGS"
 fi
@@ -647,6 +671,17 @@ fi
 # that the Kafka WAL build is not triggered.
 #
 if [ "${USE_KAFKA}XXX" = "1XXX" ]; then
+  if [ -z "${KAFKA_PATH}" ]; then
+    if [ -d "/opt/homebrew/opt/librdkafka" ]; then
+      KAFKA_PATH=/opt/homebrew/opt/librdkafka
+    elif [ -d "/usr/local/opt/librdkafka" ]; then
+      KAFKA_PATH=/usr/local/opt/librdkafka
+    fi
+  fi
+  if [ -n "${KAFKA_PATH}" ]; then
+    COMMON_FLAGS="$COMMON_FLAGS -I${KAFKA_PATH}/include"
+    PLATFORM_LDFLAGS="-L${KAFKA_PATH}/lib $PLATFORM_LDFLAGS"
+  fi
   COMMON_FLAGS="$COMMON_FLAGS -DUSE_KAFKA"
   PLATFORM_LDFLAGS="-lrdkafka++ $PLATFORM_LDFLAGS"
 fi
