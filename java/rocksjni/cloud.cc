@@ -14,6 +14,11 @@
 #include <string>
 #include <memory>
 #include <vector>
+#include <mutex>
+
+#ifdef USE_AWS
+#include <aws/core/Aws.h>
+#endif
 
 #include "include/org_rocksdb_CloudEnv.h"
 #include "include/org_rocksdb_DBCloud.h"
@@ -78,6 +83,12 @@ Status GetPersistentCacheArgs(JNIEnv* env, jstring jcache_path,
 jlong Java_org_rocksdb_CloudEnv_createFromString(
     JNIEnv* env, jclass, jlong jbase_env, jstring jconfig,
     jboolean jinvoke_prepare) {
+#ifdef USE_AWS
+  static std::once_flag aws_sdk_init_once;
+  std::call_once(aws_sdk_init_once, [] {
+    Aws::InitAPI(Aws::SDKOptions());
+  });
+#endif
   auto* base_env = reinterpret_cast<ROCKSDB_NAMESPACE::Env*>(jbase_env);
   if (base_env == nullptr) {
     ROCKSDB_NAMESPACE::RocksDBExceptionJni::ThrowNew(
