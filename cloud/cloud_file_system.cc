@@ -300,6 +300,16 @@ int offset_of(T1 CloudFileSystemOptions::*member) {
   return int(size_t(&(dummy_ceo_options.*member)) - size_t(&dummy_ceo_options));
 }
 
+static const int offset_of_aws_access_key_id =
+    int(size_t(&(dummy_ceo_options.credentials.access_key_id)) -
+        size_t(&dummy_ceo_options));
+static const int offset_of_aws_secret_access_key =
+    int(size_t(&(dummy_ceo_options.credentials.secret_key)) -
+        size_t(&dummy_ceo_options));
+static const int offset_of_aws_config_file =
+    int(size_t(&(dummy_ceo_options.credentials.config_file)) -
+        size_t(&dummy_ceo_options));
+
 const std::unordered_map<std::string, OptionTypeInfo>
     CloudFileSystemOptions::cloud_fs_option_type_info = {
         {"keep_local_sst_files",
@@ -314,6 +324,12 @@ const std::unordered_map<std::string, OptionTypeInfo>
         {"validate_filesize",
          {offset_of(&CloudFileSystemOptions::validate_filesize),
           OptionType::kBoolean}},
+        {"s3.access_key_id",
+         {offset_of_aws_access_key_id, OptionType::kString}},
+        {"s3.secret_access_key",
+         {offset_of_aws_secret_access_key, OptionType::kString}},
+        {"s3.config_file",
+         {offset_of_aws_config_file, OptionType::kString}},
         {"skip_dbid_verification",
          {offset_of(&CloudFileSystemOptions::skip_dbid_verification),
           OptionType::kBoolean}},

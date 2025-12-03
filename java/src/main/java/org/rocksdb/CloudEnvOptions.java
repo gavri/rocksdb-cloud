@@ -140,6 +140,8 @@ public class CloudEnvOptions {
     append(sb, "roll_cloud_manifest_on_open", rollManifestOnOpen);
     append(sb, "cookie_on_open", cookieOnOpen);
     append(sb, "new_cookie_on_open", newCookieOnOpen);
+    append(sb, "s3.access_key_id", accessKeyId);
+    append(sb, "s3.secret_access_key", secretAccessKey);
     // strip trailing ';' if present
     if (sb.length() > 0 && sb.charAt(sb.length() - 1) == ';') {
       sb.setLength(sb.length() - 1);
