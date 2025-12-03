@@ -661,9 +661,21 @@ if [ "${USE_AWS}XXX" = "1XXX" ]; then
     S3_CCFLAGS="$S3_CCFLAGS -I$AWS_CRT_INCLUDE"
   fi
   S3_CCFLAGS="$S3_CCFLAGS -DUSE_AWS"
-  S3_LDFLAGS="$S3_LDFLAGS -laws-cpp-sdk-s3 -laws-cpp-sdk-kinesis -laws-cpp-sdk-core -laws-cpp-sdk-transfer -laws-crt-cpp -laws-c-common -laws-c-io -laws-c-event-stream -laws-checksums -laws-c-cal -laws-c-compression -laws-c-http -laws-c-mqtt -laws-c-auth -laws-c-sdkutils"
+  # Prefer the AWS_SDK-provided libs (supports custom builds with Kinesis enabled).
+  if [ -d "${AWS_SDK}/lib" ]; then
+    S3_LDFLAGS="-L${AWS_SDK}/lib $S3_LDFLAGS"
+  fi
+  if [ -d "${AWS_SDK}/lib64" ]; then
+    S3_LDFLAGS="-L${AWS_SDK}/lib64 $S3_LDFLAGS"
+  fi
+  S3_LDFLAGS="$S3_LDFLAGS -laws-cpp-sdk-s3 -laws-cpp-sdk-kinesis -laws-cpp-sdk-core -laws-cpp-sdk-transfer -laws-crt-cpp -laws-c-s3 -laws-c-common -laws-c-io -laws-c-event-stream -laws-checksums -laws-c-cal -laws-c-compression -laws-c-http -laws-c-mqtt -laws-c-auth -laws-c-sdkutils -lcurl"
+  # macOS CRT needs Network/Security frameworks for TLS APIs.
+  if [ "$PLATFORM" = "OS_MACOSX" ]; then
+    S3_LDFLAGS="$S3_LDFLAGS -framework Network -framework Security -framework CoreFoundation"
+  fi
   COMMON_FLAGS="$COMMON_FLAGS $S3_CCFLAGS"
   PLATFORM_LDFLAGS="$S3_LDFLAGS $PLATFORM_LDFLAGS"
+  JAVA_LDFLAGS="$S3_LDFLAGS $JAVA_LDFLAGS"
 fi
 #
 # Support the Kafka WAL storing if the env variable named USE_KAFKA

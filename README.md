@@ -61,6 +61,22 @@ To run necessary tests, use `run_tests.sh` script
 
 If you need Kinesis, make sure your AWS SDK is built with Kinesis enabled (e.g., `BUILD_ONLY="s3;kinesis;transfer;core"`) and then build with `USE_AWS=1`. For Kafka WAL, install `librdkafka` and build with `USE_KAFKA=1`.
 
+### Building aws-sdk with kinesis
+
+  # Prereqs
+  brew install cmake gflags
+
+  # Configure & build (from repo root)
+  mkdir -p build && cd build
+  cmake .. \
+    -DBUILD_ONLY="s3;kinesis;transfer;core" \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DBUILD_SHARED_LIBS=OFF \
+    -DENABLE_TESTING=OFF \
+    -DCMAKE_INSTALL_PREFIX="$(pwd)/install"
+
+  cmake --build . --config Release --target install
+
 ## License
 
 RocksDB is dual-licensed under both the GPLv2 (found in the COPYING file in the root directory) and Apache 2.0 License (found in the LICENSE.Apache file in the root directory).  You may select, at your option, one of the above-listed licenses.
