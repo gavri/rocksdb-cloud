@@ -25,6 +25,7 @@ public class CloudEnvOptions {
   private boolean rollManifestOnOpen = true;
   private String cookieOnOpen = "";
   private String newCookieOnOpen = "";
+  private boolean createBucketIfMissing = true;
   private boolean invokePrepareOptions = true;
 
   public CloudEnvOptions() {}
@@ -113,6 +114,16 @@ public class CloudEnvOptions {
   }
 
   /**
+   * Whether to create the destination bucket if it is missing.
+   * Default: true.
+   */
+  public CloudEnvOptions setCreateBucketIfMissing(
+      final boolean createBucketIfMissing) {
+    this.createBucketIfMissing = createBucketIfMissing;
+    return this;
+  }
+
+  /**
    * Whether to invoke option preparation when constructing the cloud env.
    * Default: true.
    */
@@ -143,6 +154,7 @@ public class CloudEnvOptions {
     append(sb, "roll_cloud_manifest_on_open", rollManifestOnOpen);
     append(sb, "cookie_on_open", cookieOnOpen);
     append(sb, "new_cookie_on_open", newCookieOnOpen);
+    append(sb, "create_bucket_if_missing", createBucketIfMissing);
     append(sb, "s3.access_key_id", accessKeyId);
     append(sb, "s3.secret_access_key", secretAccessKey);
     append(sb, "s3.config_file", awsConfigFile);
@@ -275,6 +287,11 @@ public class CloudEnvOptions {
 
     public Builder setNewCookieOnOpen(final String newCookieOnOpen) {
       opts.setNewCookieOnOpen(newCookieOnOpen);
+      return this;
+    }
+
+    public Builder setCreateBucketIfMissing(final boolean createBucketIfMissing) {
+      opts.setCreateBucketIfMissing(createBucketIfMissing);
       return this;
     }
 
