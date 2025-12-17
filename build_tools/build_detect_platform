@@ -660,6 +660,8 @@ if [ "${USE_AWS}XXX" = "1XXX" ]; then
   if [ -n "$AWS_CRT_INCLUDE" ]; then
     S3_CCFLAGS="$S3_CCFLAGS -I$AWS_CRT_INCLUDE"
   fi
+  # AWS SDK headers trigger overloaded-virtual warnings under -Werror on gcc9+.
+  S3_CCFLAGS="$S3_CCFLAGS -Wno-error=overloaded-virtual"
   S3_CCFLAGS="$S3_CCFLAGS -DUSE_AWS"
   # Prefer the AWS_SDK-provided libs (supports custom builds with Kinesis enabled).
   if [ -d "${AWS_SDK}/lib" ]; then
