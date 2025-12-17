@@ -15,8 +15,28 @@ import java.util.List;
  * {@link CloudEnvOptions#createEnv(Env)}.
  */
 public class DBCloud extends RocksDB {
+  /**
+   * If this DBCloud instance created its own {@link Env} (e.g. via the
+   * {@link #open(Options, String, CloudEnvOptions, String, long, boolean)}
+   * overload), it is retained here and closed when this DBCloud is closed.
+   */
+  private Env ownedEnv_;
+
   private DBCloud(final long nativeHandle) {
     super(nativeHandle);
+  }
+
+  @Override
+  public void close() {
+    try {
+      super.close();
+    } finally {
+      final Env env = ownedEnv_;
+      ownedEnv_ = null;
+      if (env != null) {
+        env.close();
+      }
+    }
   }
 
   /**
@@ -180,7 +200,10 @@ public class DBCloud extends RocksDB {
       final CloudEnvOptions cloudEnvOptions, final String persistentCachePath,
       final long persistentCacheSizeGb, final boolean readOnly)
       throws RocksDBException {
-    options.setEnv(cloudEnvOptions.createEnv(Env.getDefault()));
-    return open(options, path, persistentCachePath, persistentCacheSizeGb, readOnly);
+    final Env env = cloudEnvOptions.createEnv(Env.getDefault());
+    options.setEnv(env);
+    final DBCloud db = open(options, path, persistentCachePath, persistentCacheSizeGb, readOnly);
+    db.ownedEnv_ = env;
+    return db;
   }
 }
